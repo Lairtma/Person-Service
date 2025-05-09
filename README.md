@@ -12,7 +12,7 @@
 
 1. Клонируйте репозиторий:
 ```bash
-git clone https://github.com/yourusername/person-service.git
+git clone https://github.com/Lairtma/Person-Service.git
 cd person-service
 ```
 
