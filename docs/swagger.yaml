@@ -1,0 +1,209 @@
+basePath: /
+definitions:
+  models.Person:
+    description: Информация о человеке с обогащенными данными
+    properties:
+      age:
+        example: 25
+        type: integer
+      country:
+        example: RU
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        format: date-time
+        type: string
+      gender:
+        example: male
+        type: string
+      id:
+        type: integer
+      name:
+        example: Dmitriy
+        type: string
+      patronymic:
+        example: Vasilevich
+        type: string
+      surname:
+        example: Ushakov
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.PersonInput:
+    description: Входные данные для создания или обновления информации о человеке
+    properties:
+      name:
+        example: Dmitriy
+        type: string
+      patronymic:
+        example: Vasilevich
+        type: string
+      surname:
+        example: Ushakov
+        type: string
+    required:
+    - name
+    - surname
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: A service that enriches person data with age, gender, and nationality
+    information
+  title: Person Service API
+  version: "1.0"
+paths:
+  /people:
+    get:
+      description: Получает список людей с возможностью фильтрации и пагинации
+      parameters:
+      - default: 1
+        description: Номер страницы
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Количество записей на странице
+        in: query
+        name: limit
+        type: integer
+      - description: Фильтр по имени
+        in: query
+        name: name
+        type: string
+      - description: Фильтр по фамилии
+        in: query
+        name: surname
+        type: string
+      - description: Фильтр по полу
+        in: query
+        name: gender
+        type: string
+      - description: Фильтр по стране
+        in: query
+        name: country
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить список людей
+      tags:
+      - people
+    post:
+      consumes:
+      - application/json
+      description: Создает нового человека и обогащает данные возрастом, полом и национальностью
+      parameters:
+      - description: Информация о человеке
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.PersonInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Person'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Создать нового человека
+      tags:
+      - people
+  /people/{id}:
+    delete:
+      description: Удаляет человека по ID
+      parameters:
+      - description: ID человека
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Удалить человека
+      tags:
+      - people
+    put:
+      consumes:
+      - application/json
+      description: Обновляет информацию о человеке по ID
+      parameters:
+      - description: ID человека
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Обновленная информация
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.PersonInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Person'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Обновить информацию о человеке
+      tags:
+      - people
+swagger: "2.0"
